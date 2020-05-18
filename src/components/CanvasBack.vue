@@ -18,23 +18,32 @@ const textSize = 80; // 文字大小
 let titleShowAlpha = 0; // 文字初始透明度
 let titleShowFillAlpha = 0;
 let vertex; // 生成所有的小球
+let virusImgs = [];
+let virusImgsData = [];
+
+import virus1 from "@/assets/virus1.png";
+import virus2 from "@/assets/virus2.png";
+import virus3 from "@/assets/virus3.png";
 
 export default {
   name: "CanvasBack",
   data() {
     return {
       ctxBdata: null,
+      virusImgs: [virus1, virus2, virus3],
+      screenWidth: window.screen.availWidth,
+      screenHeight: window.screen.availHeight,
     };
   },
   mounted() {
     canvas.a = document.getElementById("canvas1");
     canvas.b = document.createElement("canvas");
-    canvas.b.width = window.screen.availWidth;
-    canvas.b.height = window.screen.availHeight;
+    canvas.b.width = this.screenWidth;
+    canvas.b.height = this.screenHeight;
     ctx.a = canvas.a.getContext("2d");
     ctx.b = canvas.b.getContext("2d");
 
-    this.resize(true);
+    this.resize(null, true);
     this.init();
   },
 
@@ -47,7 +56,6 @@ export default {
     canvas = {};
     ctx = {};
 
-    // 文字相关
     dashOffset = 0; // 虚线偏移量
     nowx = 0; // 鼠标的当前位置
     nowy = 0; // 鼠标的当前位置
@@ -55,7 +63,9 @@ export default {
     theRRes = 60; // 目标半径
     titleShowAlpha = 0; // 文字初始透明度
     titleShowFillAlpha = 0;
-    vertex; // 生成所有的小球
+    vertex = null; // 生成所有的小球
+    virusImgs = [];
+    virusImgsData = [];
   },
 
   methods: {
@@ -66,6 +76,7 @@ export default {
       window.addEventListener("resize", this.resize, false);
       this.createBack();
       this.initVertext(300);
+      this.loadVirusImgs();
       this.animate();
     },
 
@@ -96,7 +107,9 @@ export default {
      * @param max 最大值
      * @param int 是否需要四舍五入为整数
      */
-    getRandom(min, max, int = false) {
+    getRandom(m1, m2, int = false) {
+      const max = Math.max(m1, m2);
+      const min = Math.min(m1, m2);
       let res = Math.random() * (max - min) + min;
       if (int) {
         res = Math.round(res);
@@ -128,10 +141,11 @@ export default {
 
       this.drawTitle();
 
+      this.drawVirusImgs();
+
       ctx.a.save();
       ctx.a.globalAlpha = titleShowFillAlpha;
       ctx.a.globalCompositeOperation = "destination-over";
-      // 登录状态下不会出现这行文字，点击页面右上角一键登录
       ctx.a.drawImage(canvas.b, 0, 0);
       ctx.a.restore();
     },
@@ -191,9 +205,47 @@ export default {
         this.updateBallAndLines();
       }
     },
+    // 初始化病毒图片
+    loadVirusImgs() {
+      for (let i = 0; i < 3; i++) {
+        const img = document.createElement("img");
+        img.onload = () => {
+          virusImgs.push(img);
+          this.initVirusImgs();
+        };
+        img.src = this.virusImgs[i];
+      }
+    },
+
+    initVirusImgs() {
+      const len = 20;
+      if (virusImgs.length === 3) {
+        for (let i = 0; i < len; i++) {
+          const size = this.getRandom(10, 1000 - i * 50);
+          virusImgsData.push({
+            img: virusImgs[this.getRandom(0, 2, true)],
+            x: this.getRandom(-200, canvas.a.width + 200),
+            y: this.getRandom(-200, canvas.a.height + 200),
+            size,
+            alpha: 0.5 - size / 2000,
+            speed: 1 - size / 1000,
+            rotateSpeed: this.getRandom(-0.01, 0.01), // 旋转速度
+            rotateNow: this.getRandom(0, Math.PI * 2), // 当前的旋转弧度
+          });
+        }
+      }
+    },
+
+    updateVirusItem(item) {
+      item.rotateSpeed = this.getRandom(-0.01, 0.01); // 旋转速度
+      item.rotateNow = this.getRandom(0, Math.PI * 2); // 当前的旋转弧度
+      item.x = this.getRandom(-200, -item.size);
+      item.y = this.getRandom(0, canvas.a.height + 200);
+    },
 
     // 初始化所有顶点信息
     initVertext(num) {
+      console.log("重新初始化");
       ctx.a.font = `${textSize}px SimHei`;
       ctx.a.textBaseline = "top";
       ctx.a.lineCap = "round";
@@ -224,6 +276,31 @@ export default {
         });
       }
       vertex = res;
+    },
+
+    drawVirusImgs() {
+      for (let i = 0; i < virusImgsData.length; i++) {
+        const item = virusImgsData[i];
+        // 超出屏幕，重新初始化该virus
+        if (item.x > canvas.a.width + 200 || item.y < -200 - item.size) {
+          this.updateVirusItem(item);
+        }
+        item.x = item.x + item.speed;
+        item.y = item.y - item.speed / 2;
+
+        ctx.a.save();
+        ctx.a.globalCompositeOperation = "destination-over";
+        ctx.a.translate(item.x + item.size / 2, item.y + item.size / 2);
+        item.rotateNow += item.rotateSpeed;
+        if (Math.abs(item.rotateNow) > Math.PI * 2) {
+          item.rotateNow = 0;
+        }
+        ctx.a.rotate(item.rotateNow);
+        ctx.a.translate(-item.x - item.size / 2, -item.y - item.size / 2);
+        ctx.a.globalAlpha = item.alpha * titleShowFillAlpha;
+        ctx.a.drawImage(item.img, item.x, item.y, item.size, item.size);
+        ctx.a.restore();
+      }
     },
 
     updateBallAndLines() {
@@ -343,7 +420,8 @@ export default {
       ctx.a.restore();
     },
 
-    resize(first) {
+    resize(event, first) {
+      console.log("resize:", first);
       if (first) {
         const clientRect = canvas.a.getBoundingClientRect();
         canvas.a.setAttribute("width", clientRect.width);
@@ -354,6 +432,15 @@ export default {
           const clientRect = canvas.a.getBoundingClientRect();
           canvas.a.setAttribute("width", clientRect.width);
           canvas.a.setAttribute("height", clientRect.height);
+          this.initVertext(300); // 重新初始化小球的数据
+          if (
+            window.screen.availWidth !== this.screenWidth ||
+            window.screen.availHeight !== this.screenHeight
+          ) {
+            this.screenWidth = window.screen.availWidth;
+            this.screenHeight = window.screen.availHeight;
+            this.createBack();
+          }
         }, 100);
       }
     },
