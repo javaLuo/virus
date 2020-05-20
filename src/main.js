@@ -17,6 +17,8 @@ import {
   BackTop,
   Dropdown,
   Menu,
+  Tag,
+  Tooltip,
 } from "ant-design-vue";
 
 Vue.use(Button);
@@ -28,6 +30,8 @@ Vue.use(Select);
 Vue.use(BackTop);
 Vue.use(Dropdown);
 Vue.use(Menu);
+Vue.use(Tag);
+Vue.use(Tooltip);
 message.config({
   maxCount: 3,
   duration: 1,

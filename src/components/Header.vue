@@ -1,5 +1,5 @@
 <template>
-  <nav class="header" ref="header">
+  <nav :class="['header', { isDark }]" ref="header">
     <span class="iconfont icon-swwh logo" />
     <ul class="nav-ul">
       <li class="hover-underline-animation">
@@ -27,6 +27,11 @@
 <script>
 export default {
   name: "Header",
+  data() {
+    return {
+      isDark: false,
+    };
+  },
   mounted() {
     document.addEventListener("scroll", this.onScrollChange, { passive: true });
     this.onScrollChange();
@@ -35,6 +40,15 @@ export default {
     document.removeEventListener("scroll", this.onScrollChange, {
       passive: true,
     });
+  },
+  watch: {
+    "$route.path"(newV) {
+      if (newV.includes("about")) {
+        this.isDark = true;
+      } else {
+        this.isDark = false;
+      }
+    },
   },
   methods: {
     onScrollChange() {
@@ -55,6 +69,7 @@ export default {
   display: flex;
   align-items: center;
   position: fixed;
+  flex: none;
   top: 0;
   left: 0;
   width: 100%;
@@ -64,6 +79,10 @@ export default {
   padding: 0 20px;
   font-size: 16px;
   backdrop-filter: blur(4px);
+  &.isDark {
+    background: rgba(0, 0, 0, 0.8) !important;
+    height: 40px !important;
+  }
   .logo {
     font-size: 36px;
     color: #cc2222;
@@ -88,12 +107,11 @@ export default {
         height: 100%;
         display: flex;
         align-items: center;
-        color: #373737;
         transition: color 256ms;
         padding: 0 10px;
         color: #fcfcfc;
         &:hover {
-          color: #0087ca;
+          color: rgb(48, 144, 223);
         }
       }
     }
@@ -112,7 +130,7 @@ export default {
       height: 2px;
       bottom: 0;
       left: 0;
-      background-color: #0087ca;
+      background-color: rgb(48, 144, 223);
       transform-origin: bottom right;
       transition: transform 0.25s ease-out;
     }

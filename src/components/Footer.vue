@@ -1,6 +1,12 @@
 <template>
   <footer>
-    © 2020 ISLUO, Inc.
+    © 2020
+    <a
+      href="https://github.com/javaLuo/"
+      rel="nofollow me noopener noreferrer"
+      target="_blank"
+      >ISLUO</a
+    >, Inc.
   </footer>
 </template>
 
@@ -19,5 +25,12 @@ footer {
   background-color: #222;
   color: #aaa;
   text-align: center;
+  flex: none;
+  a {
+    color: #aaa;
+    &:hover {
+      color: #f0f0f0;
+    }
+  }
 }
 </style>

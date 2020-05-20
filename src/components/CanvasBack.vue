@@ -5,15 +5,15 @@
 <script>
 let canvas = {};
 let ctx = {};
-let timer = null;
-
+let timer = null; // resize 防抖
+let animateTimer = null;
 // 文字相关
 let dashOffset = 0; // 虚线偏移量
 let nowx = 0; // 鼠标的当前位置
 let nowy = 0; // 鼠标的当前位置
 let theR = 60; // 当前半径
 let theRRes = 60; // 目标半径
-const text = "V I R U S  R A N K"; // 要显示的文字
+const text = "infectious disease"; // 要显示的文字
 const textSize = 80; // 文字大小
 let titleShowAlpha = 0; // 文字初始透明度
 let titleShowFillAlpha = 0;
@@ -31,15 +31,12 @@ export default {
     return {
       ctxBdata: null,
       virusImgs: [virus1, virus2, virus3],
-      screenWidth: window.screen.availWidth,
-      screenHeight: window.screen.availHeight,
     };
   },
   mounted() {
+    window.noise.seed(Math.random());
     canvas.a = document.getElementById("canvas1");
     canvas.b = document.createElement("canvas");
-    canvas.b.width = this.screenWidth;
-    canvas.b.height = this.screenHeight;
     ctx.a = canvas.a.getContext("2d");
     ctx.b = canvas.b.getContext("2d");
 
@@ -48,10 +45,12 @@ export default {
   },
 
   beforeDestroy() {
+    cancelAnimationFrame(animateTimer);
     canvas.a.removeEventListener("mousemove", this.onMousemove, false);
     canvas.a.removeEventListener("mousedown", this.onMouseDown, false);
     canvas.a.removeEventListener("mouseup", this.onMouseUp, false);
     window.removeEventListener("resize", this.resize, false);
+
     clearTimeout(timer);
     canvas = {};
     ctx = {};
@@ -82,21 +81,28 @@ export default {
 
     // 创建背景图片
     createBack() {
-      if (!this.ctxBdata) {
-        const image = ctx.b.createImageData(canvas.b.width, canvas.b.height);
-        const data = image.data;
+      const rect = canvas.a.getBoundingClientRect();
+      console.log("rect", rect);
+      const w = Math.ceil(rect.width);
+      const h = Math.ceil(rect.height);
+      canvas.b.width = w;
+      canvas.b.height = h;
 
-        for (let x = 0; x < canvas.b.width; x++) {
-          for (let y = 0; y < canvas.b.height; y++) {
-            let value = Math.abs(window.noise.perlin2(x / 1000, y / 1000));
-            value *= 200;
-            let cell = (x + y * canvas.b.width) * 4;
-            data[cell] = data[cell + 1] = data[cell + 2] = value; // r,g,b
-            data[cell + 3] = 255; // alpha.
-          }
+      const image = ctx.b.createImageData(w, h);
+      const data = image.data;
+
+      for (let x = 0; x < w; x++) {
+        for (let y = 0; y < h; y++) {
+          let value = Math.abs(window.noise.perlin2(x / 1600, y / 1600));
+          value *= 255;
+          value += 30;
+          value = Math.min(value, 255);
+          let cell = (x + y * w) * 4;
+          data[cell] = data[cell + 1] = data[cell + 2] = value; // r,g,b
+          data[cell + 3] = 255; // alpha.
         }
-        this.ctxBdata = image;
       }
+      this.ctxBdata = image;
 
       ctx.b.putImageData(this.ctxBdata, 0, 0);
     },
@@ -132,8 +138,8 @@ export default {
     },
 
     animate() {
+      animateTimer = requestAnimationFrame(this.animate);
       this.draw();
-      requestAnimationFrame(this.animate);
     },
 
     draw() {
@@ -245,7 +251,6 @@ export default {
 
     // 初始化所有顶点信息
     initVertext(num) {
-      console.log("重新初始化");
       ctx.a.font = `${textSize}px SimHei`;
       ctx.a.textBaseline = "top";
       ctx.a.lineCap = "round";
@@ -295,10 +300,19 @@ export default {
         if (Math.abs(item.rotateNow) > Math.PI * 2) {
           item.rotateNow = 0;
         }
+        const ran =
+          Math.abs(window.noise.perlin2(item.x / 1000, item.y / 1000)) * 50;
         ctx.a.rotate(item.rotateNow);
         ctx.a.translate(-item.x - item.size / 2, -item.y - item.size / 2);
         ctx.a.globalAlpha = item.alpha * titleShowFillAlpha;
-        ctx.a.drawImage(item.img, item.x, item.y, item.size, item.size);
+
+        ctx.a.drawImage(
+          item.img,
+          item.x + ran,
+          item.y + ran,
+          item.size,
+          item.size
+        );
         ctx.a.restore();
       }
     },
@@ -421,7 +435,6 @@ export default {
     },
 
     resize(event, first) {
-      console.log("resize:", first);
       if (first) {
         const clientRect = canvas.a.getBoundingClientRect();
         canvas.a.setAttribute("width", clientRect.width);
@@ -433,15 +446,8 @@ export default {
           canvas.a.setAttribute("width", clientRect.width);
           canvas.a.setAttribute("height", clientRect.height);
           this.initVertext(300); // 重新初始化小球的数据
-          if (
-            window.screen.availWidth !== this.screenWidth ||
-            window.screen.availHeight !== this.screenHeight
-          ) {
-            this.screenWidth = window.screen.availWidth;
-            this.screenHeight = window.screen.availHeight;
-            this.createBack();
-          }
-        }, 100);
+          setTimeout(() => this.createBack());
+        }, 200);
       }
     },
   },

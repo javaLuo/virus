@@ -8,7 +8,7 @@
     <article class="content">
       <div class="info-box">
         <VirtualList
-          data-key="Sort"
+          data-key="id"
           :data-sources="sourceData"
           :data-component="listBox"
           :page-mode="true"
@@ -22,7 +22,7 @@
 import ListBox from "@/components/ListBox";
 import VirtualList from "vue-virtual-scroll-list";
 import CanvasBack from "@/components/CanvasBack";
-import dataJson from "@/assets/w5nuh-ejvrg.json";
+import dataJson from "@/assets/data.json";
 
 export default {
   name: "Home",
@@ -54,7 +54,7 @@ export default {
     .info-box {
       margin: 0 auto;
       width: 100%;
-      max-width: 1200px;
+      max-width: 960px;
       background: #fff;
       border-radius: 4px;
     }
