@@ -6,7 +6,7 @@
         收集了所有已知的传染病信息，做一些科普。<br />资料大多来自于中国疾病预防控制中心，世界卫生组织。
       </p>
       <div>
-        中国疾病预防控制中心:<a
+        中国疾病预防控制中心：<a
           href="http://www.chinacdc.cn/"
           target="_blank"
           rel="nofollow me noopener noreferrer"
@@ -14,7 +14,7 @@
         >
         <br />
         世界卫生组织：<a
-          href="https://www.who.int/zh"
+          href="https://www.who.int/zh/"
           target="_blank"
           rel="nofollow me noopener noreferrer"
           >https://www.who.int/zh</a
@@ -49,6 +49,7 @@
   .content {
     max-width: 960px;
     margin: 0 auto;
+    padding: 20px;
   }
   .git {
     display: flex;

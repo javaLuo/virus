@@ -1,5 +1,6 @@
 <template>
   <div class="home-page">
+    <a-back-top />
     <!-- 首屏 -->
     <article class="home">
       <CanvasBack />

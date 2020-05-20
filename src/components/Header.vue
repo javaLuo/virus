@@ -11,7 +11,7 @@
       <li class="zw"></li>
       <li>
         <a
-          href="https://github.com"
+          href="https://github.com/javaLuo/virus"
           target="_blank"
           class="icon"
           title="Github"

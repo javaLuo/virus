@@ -35,4 +35,7 @@ export default {
 ::-webkit-scrollbar-thumb {
   background-color: #222;
 }
+.ant-back-top {
+  right: 20px;
+}
 </style>

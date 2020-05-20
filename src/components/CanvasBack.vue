@@ -13,7 +13,7 @@ let nowx = 0; // 鼠标的当前位置
 let nowy = 0; // 鼠标的当前位置
 let theR = 60; // 当前半径
 let theRRes = 60; // 目标半径
-const text = "infectious disease"; // 要显示的文字
+const text = "传染病数据列表"; // "infectious disease"; // 要显示的文字
 const textSize = 80; // 文字大小
 let titleShowAlpha = 0; // 文字初始透明度
 let titleShowFillAlpha = 0;
@@ -82,7 +82,6 @@ export default {
     // 创建背景图片
     createBack() {
       const rect = canvas.a.getBoundingClientRect();
-      console.log("rect", rect);
       const w = Math.ceil(rect.width);
       const h = Math.ceil(rect.height);
       canvas.b.width = w;

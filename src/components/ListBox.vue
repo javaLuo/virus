@@ -74,7 +74,7 @@ export default {
         case "丙":
           return "#54ed13";
         default:
-          return "#d9d9d9";
+          return "#d6d6d6";
       }
     },
     levelType(str) {
@@ -88,7 +88,7 @@ export default {
         case "螺旋体微生物":
           return "#2d5e14";
         default:
-          return "#d9d9d9";
+          return "#d6d6d6";
       }
     },
   },
@@ -97,9 +97,6 @@ export default {
     source: {
       type: Object,
     },
-  },
-  mounted() {
-    console.log("props:", this.source);
   },
 };
 </script>
