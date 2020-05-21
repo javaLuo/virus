@@ -6,19 +6,17 @@ import store from "./store";
 
 import "./assets/normalize.css";
 
-import { Button, Input, message, BackTop, Tag, Tooltip } from "ant-design-vue";
+import { BackTop, Tag, Tooltip } from "ant-design-vue";
 
-Vue.use(Button);
-Vue.use(Input);
 Vue.use(BackTop);
 Vue.use(Tag);
 Vue.use(Tooltip);
 
-message.config({
-  maxCount: 3,
-  duration: 1,
-});
-Vue.prototype.$message = message;
+// message.config({
+//   maxCount: 3,
+//   duration: 1,
+// });
+// Vue.prototype.$message = message;
 
 Vue.config.productionTip = false;
 
