@@ -5,7 +5,7 @@
       href="https://github.com/javaLuo/"
       rel="nofollow me noopener noreferrer"
       target="_blank"
-      >ISLUO</a
+      >VRLUO</a
     >, Inc.
   </footer>
 </template>

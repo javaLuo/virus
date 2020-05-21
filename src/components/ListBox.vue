@@ -33,7 +33,7 @@
         ></span>
         <div :class="['video-box', { isShow: videoOpen }]">
           <iframe
-            :src="source.video"
+            :src="videoOpen ? source.video : ''"
             scrolling="no"
             border="0"
             frameborder="no"
@@ -73,6 +73,8 @@ export default {
           return "#ee5d0c";
         case "丙":
           return "#54ed13";
+        case "尚未定级":
+          return "#000";
         default:
           return "#d6d6d6";
       }
