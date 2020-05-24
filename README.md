@@ -1,24 +1,5 @@
-# vi
+# 科普网站
 
-## Project setup
-```
-yarn install
-```
+https://vrluo.com
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+以后可能会加其他的内容
